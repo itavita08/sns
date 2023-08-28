@@ -5,12 +5,13 @@ import com.example.sns.exception.SnsApplicationException;
 import com.example.sns.model.User;
 import com.example.sns.model.entity.UserEntity;
 import com.example.sns.repository.UserEntityRepository;
+import com.example.sns.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,12 @@ public class UserService {
 
     private final UserEntityRepository userEntityRepository;
     private final BCryptPasswordEncoder encoder;
+
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
+    @Value("${jwt.token.expired-time-ms}")
+    private long expiredTimeMs;
 
     @Transactional
     public User join(String userName, String password){
@@ -39,6 +46,8 @@ public class UserService {
             throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, "");
         }
 
-        return "";
+        String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
+
+        return token;
     }
 }
