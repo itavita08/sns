@@ -2,10 +2,10 @@ spring:
   jpa:
     database: postgresql
 #    hibernate.ddl-auto: update
-    hibernate:
-      hbm2ddl.auto: update
     properties:
       hibernate:
+        hbm2ddl:
+          auto: update
         format_sql: true
     show-sql: true
 
@@ -23,5 +23,5 @@ spring:
 jwt:
   secret-key: yeongjun.sns-application-2023.secret_key
   token:
-    expired-time-ms: 360000
+    expired-time-ms: 3600000
 
