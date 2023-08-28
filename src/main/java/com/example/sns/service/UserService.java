@@ -40,10 +40,11 @@ public class UserService {
 
     public String login(String userName, String password){
 
-        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
+        UserEntity userEntity = userEntityRepository.findByUserName(userName)
+                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
 
-        if(!userEntity.getPassword().equals(password)){
-            throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, "");
+        if(!encoder.matches(password, userEntity.getPassword())){
+            throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
         String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
