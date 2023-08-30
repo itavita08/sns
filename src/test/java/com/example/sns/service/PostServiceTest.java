@@ -4,9 +4,11 @@ import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsApplicationException;
 import com.example.sns.fixture.PostEntityFixture;
 import com.example.sns.fixture.UserEntityFixture;
+import com.example.sns.model.entity.CommentEntity;
 import com.example.sns.model.entity.LikeEntity;
 import com.example.sns.model.entity.PostEntity;
 import com.example.sns.model.entity.UserEntity;
+import com.example.sns.repository.CommentEntityRepository;
 import com.example.sns.repository.LikeEntityRepository;
 import com.example.sns.repository.PostEntityRepository;
 import com.example.sns.repository.UserEntityRepository;
@@ -38,6 +40,9 @@ public class PostServiceTest {
 
     @MockBean
     private LikeEntityRepository likeEntityRepository;
+
+    @MockBean
+    private CommentEntityRepository commentEntityRepository;
 
 
     @Test
@@ -232,6 +237,35 @@ public class PostServiceTest {
 
     @Test
     public void 좋아요_할_포스트가_존재하지_않은_경우(){
+
+        String userName = "userName";
+        Integer postId = 1;
+
+        when(postEntityRepository.findById(any())).thenReturn(Optional.empty());
+
+        SnsApplicationException e = Assertions.assertThrows(SnsApplicationException.class, () -> postService.like(postId, userName));
+        Assertions.assertEquals(e.getErrorCode(), ErrorCode.POST_NOT_FOUND);
+    }
+
+    @Test
+    public void 댓글_쓰기_성공(){
+
+        String userName = "userName";
+        Integer postId = 1;
+
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
+        UserEntity userEntity = postEntity.getUser();
+
+        when(postEntityRepository.findById(any())).thenReturn(Optional.of(postEntity));
+        when(userEntityRepository.findByUserName(any())).thenReturn(Optional.of(userEntity));
+
+        when(commentEntityRepository.save(any())).thenReturn(mock(CommentEntity.class));
+
+        Assertions.assertDoesNotThrow(() -> postService.comments(postId,"comments",userName));
+    }
+
+    @Test
+    public void 댓글_작성시_포스트가_존재하지_않을경우(){
 
         String userName = "userName";
         Integer postId = 1;
