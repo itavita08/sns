@@ -12,8 +12,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "\"likes\"")
-@SQLDelete(sql = "UPDATE \"likes\" SET deleted_at = NOW() where id=?")
+@Table(name = "\"like\"")
+@SQLDelete(sql = "UPDATE \"like\" SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL")
 public class LikeEntity {
 
