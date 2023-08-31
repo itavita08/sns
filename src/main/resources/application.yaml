@@ -19,6 +19,8 @@ spring:
   sql:
     init:
       platform: postgres
+  redis:
+    url: redis://:pc027b408df224efd230a37c09a8835d51f060d6385b1387c8591922171266cac@ec2-23-22-33-14.compute-1.amazonaws.com:23059
 
 jwt:
   secret-key: yeongjun.sns-application-2023.secret_key
