@@ -72,6 +72,8 @@ public class PostService {
                     String.format("%s has not permission with %s", userName, postId));
         }
 
+        likeEntityRepository.deleteAllByPost(postEntity);
+        commentEntityRepository.deleteAllByPost(postEntity);
         postEntityRepository.delete(postEntity);
     }
 
